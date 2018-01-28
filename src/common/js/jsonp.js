@@ -17,7 +17,6 @@ return new Promise((resolve,reject)=>{
 function param(data){
   let url='';
   for(var k in data){
-    console.log(data[k]);
     let value=data[k]!==undefined?data[k]:'';
     url+=`&${k}=${encodeURIComponent(value)}`;
   }
