@@ -12,7 +12,7 @@ export const model =state=>state.model
 
 export const currentIndex =state=>state.currentIndex
 
-export const surrentSong=(state)=>{
+export const currentSong=(state)=>{
     return state.playList[state.currentIndex]||{}
 }
 
