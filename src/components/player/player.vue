@@ -22,18 +22,25 @@
             </div>
           </div>
           <div class="bottom">
+            <div class="progress-wrapper">
+              <span class="time time-l">{{format(currentTime)}}</span>
+              <div class="progress-bar-wrapper">
+                <progress-bar :percent="percent" @percentChange="onProgressChange"></progress-bar>
+              </div>
+            <span class="time time-r">{{format(currentSong.duration)}}</span>
+            </div>
             <div class="operators">
               <div class="icon i-left">
                 <i class="icon-sequence"></i>
               </div>
-               <div class="icon i-left">
-                <i class="icon-prev"></i>
+               <div class="icon i-left" :class="disableCls">
+                <i class="icon-prev" @click="prev"></i>
               </div>
-               <div class="icon i-center" >
+               <div class="icon i-center" :class="disableCls">
                 <i :class="playIcon" @click="togglePlaying"></i>
               </div>
-              <div class="icon i-right">
-                <i class="icon-next"></i>
+              <div class="icon i-right" :class="disableCls">
+                <i class="icon-next" @click="next"></i>
               </div>
                <div class="icon i-right">
                 <i class="icon icon-not-favorite"></i>
@@ -53,33 +60,61 @@
           <p class="desc" v-html="currentSong.singer"></p>
         </div>
         <div class="control">
-          <i :class="minIcon" @click.stop="togglePlaying"></i>
+          <progress-circle :radius="radius" :percent="percent">
+          <i :class="minIcon" @click.stop="togglePlaying" class="icon-mini"></i>
+        </progress-circle>
         </div>
         <div class="control">
           <i class="icon-playlist"></i>
         </div>
       </div>
 </transition>
-<audio :src="currentSong.url" ref="audio"></audio>
+<audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error"
+@timeupdate="updateTime"></audio>
   </div>
   
 </template>
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import progressBar from "base/progress-bar/progress-bar"
+import progressCircle from 'base/progress-circle/progress-circle'
 
 export default {
+  components: {
+    progressBar,
+    progressCircle
+  },
+  data() {
+    return {
+      songReady: false,
+      currentTime: 0,
+      radius:32
+    };
+  },
   computed: {
-    cdCls(){
-        return this.playing?'play':'play pause'
+    cdCls() {
+      return this.playing ? "play" : "play pause";
     },
-    playIcon(){
-        return this.playing?'icon-pause':'icon-play'
+    playIcon() {
+      return this.playing ? "icon-pause" : "icon-play";
     },
-    minIcon(){
-        return this.playing?'icon-pause-mini':'icon-play-mini'
+    minIcon() {
+      return this.playing ? "icon-pause-mini" : "icon-play-mini";
     },
-    ...mapGetters(["fullScreen", "playList", "currentSong","playing"])
+    disableCls() {
+      return this.songReady ? "" : "disable";
+    },
+    percent() {
+      return this.currentTime / this.currentSong.duration;
+    },
+    ...mapGetters([
+      "fullScreen",
+      "playList",
+      "currentSong",
+      "playing",
+      "currentIndex"
+    ])
   },
   methods: {
     click() {
@@ -88,25 +123,82 @@ export default {
     open() {
       this.setFullScreen(true);
     },
-    togglePlaying(){
-      console.log('togglePlaying');
-      this.setPlayingState(!this.playing)
+    togglePlaying() {
+      this.setPlayingState(!this.playing);
+    },
+    prev() {
+      if (!this.songReady) {
+        //防止过快点击
+        return;
+      }
+      let index = this.currentIndex - 1;
+      if (index === -1) {
+        index = this.playList.length - 1;
+      }
+      this.setCurrentIndex(index);
+      if (!this.playing) {
+        this.togglePlaying();
+      }
+      this.songReady = false; //准备好播放了就会变成true
+    },
+    next() {
+      if (!this.songReady) {
+        return;
+      }
+      let index = this.currentIndex + 1;
+      if (index === this.playList.length) {
+        index = 0;
+      }
+      this.setCurrentIndex(index);
+      if (!this.playing) {
+        this.togglePlaying();
+      }
+      this.songReady = false;
+    },
+    ready() {
+      this.songReady = true;
+    },
+    error() {
+      this.songReady = true;
+    },
+    updateTime(e) {
+      this.currentTime = e.target.currentTime;
+    },
+    onProgressChange(percent) {
+      this.$refs.audio.currentTime = this.currentSong.duration * percent;
+      if (!this.playing) {
+        this.togglePlaying();
+      }
+    },
+    format(interval) {
+      interval = interval | 0;
+      const m = (interval / 60) | 0;
+      const s = this._pad(interval % 60);
+      return `${m}:${s}`;
+    },
+    _pad(num, n = 2) {
+      let len = num.toString().length;
+      while (len < n) {
+        num = "0" + num;
+        len++;
+      }
+      return num;
     },
     ...mapMutations({
       setFullScreen: "SET_FULL_SCREEN",
-      setPlayingState:"SET_PLAYING_STATE"
+      setPlayingState: "SET_PLAYING_STATE",
+      setCurrentIndex: "SET_CURRENT_INDEX"
     })
   },
-  watch:{
-    currentSong(){
-      this.$nextTick(()=>{
-      this.$refs.audio.play()
-      })
+  watch: {
+    currentSong() {
+      this.$nextTick(() => {
+        this.$refs.audio.play();
+      });
     },
-    playing(newPlaying){
-      console.log(newPlaying);
-      const audio=this.$refs.audio
-      newPlaying?audio.play():audio.pause()
+    playing(newPlaying) {
+      const audio = this.$refs.audio;
+      newPlaying ? audio.play() : audio.pause();
     }
   }
 };
