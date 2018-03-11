@@ -6,7 +6,9 @@ const state={
   fullScreen:false,
   playList:[],
   sequenceList:[],
-  model:playMode.sequence,
-  currentIndex:-1
+  mode:playMode.sequence,
+  currentIndex:-1,
+  disc:{},
+  topList:{}
 }
 export default state

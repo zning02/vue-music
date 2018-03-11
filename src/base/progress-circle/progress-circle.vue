@@ -28,7 +28,6 @@ export default {
   },
   computed:{
      dashOffset(){
-         console.log((1-this.percent)*this.dashArray)
          return (1-this.percent)*this.dashArray
      } 
   }

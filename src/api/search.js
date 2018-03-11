@@ -14,13 +14,14 @@ export function getHotKey() {
 }
 
 export function search(query, page, zhida, perpage) {
+
   const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
 
   const data = Object.assign({}, commonParams, {
     w: query,
     p: page,
-    perpage,
-    n: perpage,
+    perpage:20,
+    n: 20,
     catZhida: zhida ? 1 : 0,
     zhidaqu: 1,
     t: 0,
@@ -36,3 +37,4 @@ export function search(query, page, zhida, perpage) {
 
   return jsonp(url, data, options)
 }
+

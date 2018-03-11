@@ -27,7 +27,18 @@ const mutations={
 
   [types.SET_CURRENT_INDEX](state,index){
     state.currentIndex=index
+  },
+  [types.SET_DISC](state,disc){
+    state.disc=disc
+  },
+  [types.SET_TOPLIST](state,list){
+    state.topList=list
+  },
+  [types.ADD_PLAY_LIST](state,song){
+    state.playList=state.playList.concat(song);
+  },
+  [types.ADD_SEQUENCE_LIST](state,song){
+    state.sequenceList=state.sequenceList.concat(song);
   }
-
 }
 export default mutations
