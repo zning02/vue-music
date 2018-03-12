@@ -1,11 +1,12 @@
 <template>
   <div class="player" v-show="playList.length>0">
     <transition name="normal">
-      <div class="normal-player" v-show="fullScreen">
-          <div class="background">
+      <div class="normal-player" v-show="fullScreen"   @touchstart.prevent="triggerPlay">
+          <div class="background"  >
             <img  width="100%" height="100%" :src="currentSong.image"/>
           </div>
-          <div class="top">
+         
+          <div class="top" >
             <div class="back" @click="click">
               <i class="icon-back"></i>
             </div>
@@ -15,7 +16,8 @@
           <div class="middle"
            @touchstart.prevent="middleTouchStart"
           @touchmove.prevent="middleTouchMove"
-          @touchend="middleTouchEnd"
+          @touchend="middleTouchEnd" 
+
           >
             <div class="middle-l" ref="middleL">
               <div class="cd-wrapper">
@@ -97,6 +99,9 @@
 </transition>
 <audio :src="currentSong.url" ref="audio" @canplay="ready" @error="error"
 @timeupdate="updateTime" @ended="end"></audio>
+
+<!-- <audio src="http://thirdparty.gtimg.com/C100001sBy9d0RzXkR.m4a?fromtag=38" ref="audio" @canplay="ready" @error="error"
+@timeupdate="updateTime" @ended="end"></audio> -->
   </div>
   
 </template>
@@ -123,7 +128,9 @@ export default {
       currentLyric: null,
       currentLineNum: 0,
       currentShow: "cd",
-      playingLyric:''
+      playingLyric:'',
+      firstFlag:true,
+      sameFlag:false
     };
   },
   created() {
@@ -160,6 +167,13 @@ export default {
     ])
   },
   methods: {
+    triggerPlay(){
+      if(!this.sameFlag&&this.firstFlag){
+        this.$refs.audio.play();
+        this.getLyric();
+        this.firstFlag=false
+      }
+    },
     click() {
       this.setFullScreen(false);
     },
@@ -377,11 +391,16 @@ export default {
   watch: {
     currentSong(newSong, oldSong) {
       if (newSong.id === oldSong.id) {
+          this.sameFlag=true
         return;
+      }
+      if(this.firstFlag){
+        return 
       }
       if(this.currentLyric){
         this.currentLyric.stop()
       }
+      console.log('current')
      setTimeout(() => {
         this.$refs.audio.play();
         this.getLyric();
