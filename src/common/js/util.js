@@ -12,3 +12,11 @@ export function shuffle(arr){
   }
   return _arr
 }
+     
+export function myBrowser(){
+  var userAgent = navigator.userAgent; //取得浏览器的userAgent字符串
+  if (userAgent.indexOf("Safari") > -1) {
+    return true;
+} //判断是否Safari浏览器
+else return false
+}
