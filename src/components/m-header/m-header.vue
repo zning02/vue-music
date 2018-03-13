@@ -1,10 +1,11 @@
 <template>
   <div class="m-header">
-    <div class="icon"></div>
-    <h1 class="text">Chicken Music</h1>
-    <router-link tag="div" class="mine" to="/user">
+   
+    <h1 class="text">My Music</h1>
+     <div class="icon"> <i class="icon icon-favorite" style="font-size: 20px;color: #d81e06;"></i></div>
+    <!-- <router-link tag="div" class="mine" to="/user">
       <i class="icon-mine"></i>
-    </router-link>
+    </router-link> -->
   </div>
 </template>
 
@@ -29,8 +30,9 @@
       width: 30px
       height: 32px
       margin-right: 9px
-      bg-image('logo')
+      // bg-image('logo')
       background-size: 30px 32px
+      
     .text
       display: inline-block
       vertical-align: top

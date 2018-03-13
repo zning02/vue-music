@@ -5,7 +5,8 @@
           <div v-if="recommends.length" class="slider-wrapper" ref="sliderWrapper">
             <slider>
               <div  v-for="item in recommends">
-                <a :href="item.linkUrl">
+                <!-- <a :href="item.linkUrl"> -->
+                <a >
                   <img :src="item.picUrl"  class="needsclick">
                 </a>
               </div>

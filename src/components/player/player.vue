@@ -57,7 +57,7 @@
               </div>
             <span class="time time-r">{{format(currentSong.duration)}}</span>
             </div>
-            <div class="operators">
+            <div class="operators" style="padding-right: 17px;">
               <div class="icon i-left" @click="changeMode">
                 <i :class="iconMode"></i>
               </div>
@@ -70,9 +70,9 @@
               <div class="icon i-right" :class="disableCls">
                 <i class="icon-next" @click="next"></i>
               </div>
-               <div class="icon i-right">
+               <!-- <div class="icon i-right">
                 <i class="icon icon-not-favorite"></i>
-              </div>
+              </div> -->
             </div>
           </div>
       </div>
