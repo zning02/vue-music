@@ -417,8 +417,10 @@ export default {
       }, 1000);
     },
     playing(newPlaying) {
-      const audio = this.$refs.audio;
-      newPlaying ? audio.play() : audio.pause();
+        const audio = this.$refs.audio;
+        this.$nextTick(() => {
+        newPlaying ? audio.play() : audio.pause();
+        })
     }
   }
 };

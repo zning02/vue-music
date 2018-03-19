@@ -45,10 +45,8 @@ export default {
               return index+1
           }
       }
-  },
-  created(){
-      console.log('dd')
   }
+ 
 }
 </script>
 
